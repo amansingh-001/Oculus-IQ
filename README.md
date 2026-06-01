@@ -1,43 +1,79 @@
 # OculusIQ - Freight Intelligence Platform
 
-AI-powered supply chain intelligence for freight forwarders and mid-market exporters.
-See disruptions before they cascade. Act before your clients notice.
+OculusIQ is an operations-grade supply chain intelligence system for freight forwarders and mid-market exporters. It turns fragmented shipping data into a single command view: where cargo is, what is at risk, and what to do next.
 
-## Who This Is For
+If your day is spent reconciling carrier portals, email threads, and client follow-ups, OculusIQ is built to replace that chaos with a portfolio view and an action plan.
 
-OculusIQ is built for freight forwarders managing multiple shipper clients and mid-market exporters who ship 500-5,000 containers per year.
-If your team spends the day checking carrier portals, forwarding alerts manually, and finding out about disruptions from clients instead of tools, OculusIQ is built for you.
+## What It Is For
 
-## What Is New In V3
+- Freight forwarders managing 20-200 SME clients.
+- Exporters shipping 500-5,000 containers per year.
+- Operations teams that need proactive disruption detection and faster client communication.
 
-- Operations Command Map: combined map and port network with cargo, ports, routes, and external risk layers.
-- Scenario Planner modal: top-right quick simulation for disruption planning.
-- Add Client wizard: six-step client and cargo onboarding with DB-backed persistence.
-- Intelligence Scan Now: persists scans and displays the latest intelligence summary.
-- External risk feed: GDACS events ingested and shown on the map.
-- DB-backed create APIs for clients, shipments, ports, and routes.
-- CSV import with validation and optional Nominatim geocoding for city coordinates.
+## What It Can Do
 
-## Core Capabilities
+- Show all cargo across clients in one command map.
+- Detect disruption signals, quantify risk, and flag at-risk shipments.
+- Run what-if scenarios with a working Scenario Planner.
+- Create and persist clients, shipments, ports, and routes in the database.
+- Ingest external risk events (GDACS) and surface them on the map.
+- Import shipments by CSV with validation and optional Nominatim geocoding.
+- Execute on-demand intelligence scans and save the results.
 
-- Client Portfolio: monitor all forwarder clients, active cargo, SLA risk, and at-risk shipments.
-- Cargo Portfolio: filter shipments by client, lane, carrier, mode, risk, and tariff exposure.
-- SLA Breach Predictor: identify clients likely to miss contracted on-time performance.
-- Tariff Intelligence: calculate landed cost, tariff exposure, insurance, and handling.
-- Carbon Tracker: estimate shipment CO2 and route carbon tradeoffs.
-- Risk Scenario Studio: run what-if disruption scenarios and show client impact.
-- Intelligence Center: anomaly detection, cascade analysis, and external risk events.
-- Operations Command Map: visualize cargo, routes, ports, chokepoints, and disruptions.
 
-## Tech Stack
+## Live vs Simulated Data
 
-- Backend: FastAPI, SQLAlchemy async, SQLite WAL, APScheduler, httpx, Pydantic settings.
-- AI: Gemini 1.5 Flash via `google-generativeai`, with fallback responses when no key is configured.
-- Frontend: React 18, Vite, Tailwind, React Query, React Router, Leaflet, Recharts, Three.js.
+| Data | Source | Live | Notes |
+| --- | --- | --- | --- |
+| Weather | Open-Meteo | Yes | Used in risk scoring |
+| External risks | GDACS | Yes | Public feed, no key |
+| Geocoding | Nominatim | Yes | Optional, rate limited |
+| Port congestion | Simulated | No | Labeled as simulated |
+| Shipments, clients, ports, routes | SQLite | Yes | DB-backed create APIs |
+| AI copilot | Gemini | Optional | Fallback responses if no key |
 
-## Local Setup
+## Product Tour
 
-### One-command startup
+- Operations Command Map: unified view of cargo, ports, routes, and external risks.
+- Cargo Portfolio: filter shipments by client, lane, carrier, and status.
+- Intelligence Center: run scans, detect anomalies, and review external risks.
+- Scenario Planner: simulate disruptions and quantify the impact.
+- Client Onboarding: add a client with cargo details in a guided wizard.
+
+## Architecture
+
+```mermaid
+flowchart LR
+	Frontend[React + Vite UI] --> API[FastAPI API]
+	API --> DB[(SQLite)]
+	API --> Weather[Open-Meteo]
+	API --> External[GDACS]
+	API --> Geo[Nominatim]
+	API --> AI[Gemini 1.5 Flash]
+```
+
+## Repository Structure
+
+```text
+OculusIQ/
+	backend/
+		core/            # config, models, db, scheduler
+		routers/         # API endpoints
+		services/        # risk, simulation, intelligence, geocoding
+		data/            # seed data
+	frontend/
+		src/
+			api/           # API client
+			components/    # UI building blocks
+			pages/         # screens
+	.gitignore
+	README.md
+	start.bat
+	start.sh
+	TRANSFORMATION_PROGRESS.md
+```
+
+## Quick Start
 
 - Windows: `start.bat`
 - macOS/Linux: `./start.sh` (ensure it is executable)
@@ -60,8 +96,7 @@ npm run dev
 
 ## Environment Variables
 
-Create `backend/.env` only if you want live AI or to override defaults.
-Use `backend/.env.example` as a template.
+Create `backend/.env` only if you want live AI or to override defaults. Use `backend/.env.example` as a template.
 
 ```
 GEMINI_API_KEY=your_key_here
@@ -71,6 +106,16 @@ OPEN_METEO_BASE=https://api.open-meteo.com/v1
 NOMINATIM_BASE=https://nominatim.openstreetmap.org
 NOMINATIM_USER_AGENT=OculusIQ/0.1 (contact: you@example.com)
 ```
+
+## CSV Import Schema
+
+```
+shipment_id, client_name, origin_city, origin_country, dest_city, dest_country,
+carrier, mode, status, eta, cargo_type, cargo_value_usd, weight_kg, bl_number,
+po_number, incoterm, hs_code, container_number
+```
+
+Computed fields (risk score, coordinates, waypoints) are generated after import.
 
 ## API Base
 
@@ -93,17 +138,7 @@ NOMINATIM_USER_AGENT=OculusIQ/0.1 (contact: you@example.com)
 - `PATCH /shipments/{shipment_id}`
 - `POST /simulation/run`
 
-## CSV Import Schema
-
-```
-shipment_id, client_name, origin_city, origin_country, dest_city, dest_country,
-carrier, mode, status, eta, cargo_type, cargo_value_usd, weight_kg, bl_number,
-po_number, incoterm, hs_code, container_number
-```
-
-Computed fields (risk score, coordinates, waypoints) are generated after import.
-
-## Important Local Notes
+## Operational Notes
 
 - SQLite has no migrations in this MVP. After model changes, delete:
 	- `backend/data/shipments.db`
