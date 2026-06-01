@@ -1,0 +1,11 @@
+venv/
+.venv/
+__pycache__/
+*.pyc
+backend/.env
+backend/data/shipments.db
+backend/data/shipments.db-wal
+backend/data/shipments.db-shm
+frontend/node_modules/
+frontend/dist/
+.DS_Store
