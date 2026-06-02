@@ -40,6 +40,8 @@ app = FastAPI(title="OculusIQ API", version="2.0.0", lifespan=lifespan)
 ALLOWED_ORIGINS = [
     # Production frontend
     "https://oculus-iq.vercel.app",
+    # Railway public URL (if frontend ever served from here)
+    "https://oculus-iq-production.up.railway.app",
     # Local development
     "http://localhost:5173",
     "http://127.0.0.1:5173",
