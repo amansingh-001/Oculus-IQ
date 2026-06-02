@@ -70,7 +70,6 @@ OculusIQ/
 	README.md
 	start.bat
 	start.sh
-	TRANSFORMATION_PROGRESS.md
 ```
 
 ## Quick Start
