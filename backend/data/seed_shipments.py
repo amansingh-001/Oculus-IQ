@@ -489,7 +489,7 @@ async def seed_database() -> None:
         if existing and existing > 0:
             return
 
-        shipments = _build_shipments(500)
+        shipments = _build_shipments(60)
         session.add_all(shipments)
         await session.flush()
 
