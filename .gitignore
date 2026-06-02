@@ -1,11 +1,93 @@
-venv/
-.venv/
+# ─────────────────────────────────────────────
+#  OculusIQ — .gitignore
+#  Stack: Python (FastAPI) + Vite / React
+# ─────────────────────────────────────────────
+
+# ── Environment / Secrets ────────────────────
+.env
+.env.*
+!.env.example          # keep example files
+!**/.env.example
+*.secret
+*.key
+*.pem
+
+# ── Python ───────────────────────────────────
 __pycache__/
-*.pyc
-backend/.env
-backend/data/shipments.db
-backend/data/shipments.db-wal
-backend/data/shipments.db-shm
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+.installed.cfg
+MANIFEST
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+.python-version
+
+# pytest / coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+*.cover
+
+# mypy / pyright
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyright/
+
+# ── SQLite database files ─────────────────────
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+
+# ── Node / Frontend ───────────────────────────
+node_modules/
 frontend/node_modules/
+
+# Vite / build outputs
+dist/
 frontend/dist/
+.vite/
+
+# Package manager locks (keep package-lock.json; remove if you prefer yarn/pnpm)
+# yarn.lock
+# pnpm-lock.yaml
+
+# ── Logs ─────────────────────────────────────
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ── OS / Editor ───────────────────────────────
 .DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# ── Misc ─────────────────────────────────────
+.gemini/
